@@ -94,6 +94,57 @@
       background-color: #1565c0;
     }
 
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      text-align: center;
+    }
+
+    .modal-content img {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+
+    .modal-content h2 {
+      margin: 10px 0 5px;
+      color: #1e88e5;
+    }
+
+    .modal-content p {
+      font-size: 0.95em;
+    }
+
+    .close-btn {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
     @media (max-width: 600px) {
       header h1 {
         font-size: 1.6rem;
@@ -124,6 +175,17 @@
   </div>
 
   <div class="container" id="danceContainer"></div>
+
+  <!-- Modal -->
+  <div class="modal" id="danceModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <img id="modalImage" src="" alt="Dance Image" />
+      <h2 id="modalName"></h2>
+      <h4 id="modalRegion"></h4>
+      <p id="modalDescription"></p>
+    </div>
+  </div>
 
   <script>
     const dances = [
@@ -166,12 +228,17 @@
     ];
 
     const container = document.getElementById('danceContainer');
+    const modal = document.getElementById('danceModal');
+    const modalName = document.getElementById('modalName');
+    const modalRegion = document.getElementById('modalRegion');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalImage = document.getElementById('modalImage');
 
     function renderDances(filter = "All") {
       container.innerHTML = "";
       const filtered = filter === "All" ? dances : dances.filter(d => d.region === filter);
 
-      filtered.forEach((dance) => {
+      filtered.forEach((dance, index) => {
         const card = document.createElement('div');
         card.className = "card";
 
@@ -179,17 +246,41 @@
           <img src="${dance.image}" alt="${dance.name}">
           <div class="info">
             <h3>${dance.name}</h3>
-            <p>${dance.info}</p>
-            <button onmouseover="this.textContent='Learn More...'" onmouseout="this.textContent='Details'">Details</button>
+            <p>${dance.info.substring(0, 70)}...</p>
+            <button 
+              onmouseover="this.textContent='Learn More...'" 
+              onmouseout="this.textContent='Details'"
+              onclick="openModal(${index})"
+            >Details</button>
           </div>
         `;
         container.appendChild(card);
       });
     }
 
+    function openModal(index) {
+      const dance = dances[index];
+      modalName.textContent = dance.name;
+      modalRegion.textContent = `Region: ${dance.region}`;
+      modalDescription.textContent = dance.info;
+      modalImage.src = dance.image;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
     function filterByRegion() {
       const region = document.getElementById("regionFilter").value;
       renderDances(region);
+    }
+
+    // Close modal if clicked outside
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        closeModal();
+      }
     }
 
     // Initial render
