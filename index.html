@@ -5,160 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Classical Dance Mudras Dashboard</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f0f0f5;
-    }
-
-    header {
-      background-color: #5c3d99;
-      padding: 20px;
-      color: white;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2em;
-    }
-
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #fafafa; }
+    header { background: #4a148c; color: white; padding: 20px; text-align: center; }
+    header h1 { margin: 0; font-size: 2em; }
     .container {
-      padding: 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
+      padding: 20px;
     }
-
     .mudra-card {
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s;
     }
-
-    .mudra-card:hover {
-      transform: scale(1.02);
-    }
-
-    .mudra-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-
-    .mudra-info {
-      padding: 15px;
-    }
-
-    .mudra-name {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
+    .mudra-card:hover { transform: translateY(-5px); }
+    .mudra-card img { width: 100%; height: 180px; object-fit: cover; }
+    .mudra-info { padding: 12px; }
+    .mudra-info h3 { margin: 0 0 10px; font-size: 1.1em; color: #333; }
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.6);
-    }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
       padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 500px;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 480px;
+      width: 100%;
       position: relative;
     }
-
     .close-btn {
-      color: #aaa;
       position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 24px;
+      top: 10px; right: 15px;
+      font-size: 22px; color: #777;
       cursor: pointer;
     }
-
-    .close-btn:hover {
-      color: black;
-    }
-
-    @media (max-width: 600px) {
-      .mudra-card img {
-        height: 150px;
-      }
-    }
+    .close-btn:hover { color: #000; }
   </style>
 </head>
 <body>
 
   <header>
     <h1>Classical Dance Mudras</h1>
-    <p>Explore different hand gestures (mudras) and their meanings</p>
+    <p>Explore iconic hand gestures and their meanings</p>
   </header>
 
-  <div class="container" id="mudraContainer">
-    <!-- Mudra cards will be inserted here -->
-  </div>
+  <div class="container" id="mudraContainer"></div>
 
-  <!-- Modal for meaning -->
-  <div id="mudraModal" class="modal">
+  <div class="modal" id="mudraModal">
     <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <span class="close-btn" onclick="closeModal()">×</span>
       <h2 id="modalMudraName"></h2>
       <p id="modalMudraMeaning"></p>
     </div>
   </div>
 
   <script>
-    // Mudra data
     const mudras = [
       {
-        name: "Anjali Mudra",
-        image: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Anjali_Mudra_Hand_Gesture.jpg",
-        meaning: "A gesture of salutation and respect, used to greet others or invoke the divine."
+        name: "Pataka (Flag)",
+        image: "https://via.placeholder.com/400x300?text=Pataka",
+        meaning: "Represents cloud, forest, river, or to signal 'halt'—a versatile single-hand gesture."
       },
       {
-        name: "Pataka Mudra",
-        image: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Pataka_Mudra.jpg",
-        meaning: "Symbolizes the beginning, clouds, forest, denial, or river."
+        name: "Tripataka (Three‑part Flag)",
+        image: "https://via.placeholder.com/400x300?text=Tripataka",
+        meaning: "Symbolizes a crown, tree, arrow, or rising light." 
       },
       {
-        name: "Tripataka Mudra",
-        image: "https://upload.wikimedia.org/wikipedia/commons/0/02/Tripataka_Mudra.jpg",
-        meaning: "Represents a crown, a tree, or an arrow."
+        name: "Ardhapataka (Half Flag)",
+        image: "https://via.placeholder.com/400x300?text=Ardhapataka",
+        meaning: "Used to indicate tender shoots, a blade, leaves, or a riverbank."
       },
       {
-        name: "Ardhapataka Mudra",
-        image: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Ardhapataka_Mudra.jpg",
-        meaning: "Half-flag; used to show leaves, board, or a knife."
+        name: "Anjali (Salutation)",
+        image: "https://via.placeholder.com/400x300?text=Anjali",
+        meaning: "Both palms joined together—expresses greeting, prayer, or reverence."
       },
       {
-        name: "Katakamukha Mudra",
-        image: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Katakamukha_Mudra.jpg",
-        meaning: "Used for wearing a necklace, garland, or showing plucking flowers."
+        name: "Kartarimukha (Scissors Face)",
+        image: "https://via.placeholder.com/400x300?text=Kartarimukha",
+        meaning: "Resembles shears—conveys separation, opposition, or lightning."
       },
       {
-        name: "Mayura Mudra",
-        image: "https://upload.wikimedia.org/wikipedia/commons/2/2b/Mayura_Mudra.jpg",
-        meaning: "Symbolizes a peacock, writing, or vomiting."
-      },
+        name: "Mayura (Peacock)",
+        image: "https://via.placeholder.com/400x300?text=Mayura",
+        meaning: "Suggests the beak of a peacock, or denotes shaving hair, forest, or tears."
+      }
     ];
 
     const container = document.getElementById('mudraContainer');
@@ -166,38 +109,29 @@
     const modalName = document.getElementById('modalMudraName');
     const modalMeaning = document.getElementById('modalMudraMeaning');
 
-    // Render mudra cards
-    mudras.forEach((mudra, index) => {
+    mudras.forEach((mudra, i) => {
       const card = document.createElement('div');
       card.className = 'mudra-card';
       card.innerHTML = `
         <img src="${mudra.image}" alt="${mudra.name}">
         <div class="mudra-info">
-          <div class="mudra-name">${mudra.name}</div>
-          <div><button onclick="openModal(${index})">View Meaning</button></div>
-        </div>
-      `;
+          <h3>${mudra.name}</h3>
+          <button onclick="openModal(${i})">View Meaning</button>
+        </div>`;
       container.appendChild(card);
     });
 
-    // Modal functions
-    function openModal(index) {
-      const mudra = mudras[index];
-      modalName.textContent = mudra.name;
-      modalMeaning.textContent = mudra.meaning;
-      modal.style.display = 'block';
+    function openModal(i) {
+      modalName.textContent = mudras[i].name;
+      modalMeaning.textContent = mudras[i].meaning;
+      modal.style.display = 'flex';
     }
-
     function closeModal() {
       modal.style.display = 'none';
     }
-
-    // Close modal when clicking outside
     window.onclick = function(event) {
-      if (event.target === modal) {
-        closeModal();
-      }
-    }
+      if (event.target === modal) closeModal();
+    };
   </script>
 </body>
 </html>
